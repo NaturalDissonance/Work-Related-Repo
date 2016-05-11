@@ -1,0 +1,82 @@
+
+/**
+ * 
+ * @author Axel Swaretz
+ * Klass för att undersöka om det finns värdefel
+ *
+ */
+public class Handler {
+	private double[][] values;
+	/**
+	 * konstruktor
+	 */
+	public Handler(){
+	}
+	
+	/**
+	 * metod för att ändra datan
+	 * @param input
+	 */
+	
+	public void set(Tuple input){
+		values = input.getValues();
+	}
+
+	/**
+	 * Privat metod för att beräkna standardavvikelsen
+	 * @param list
+	 * @return standardDeviation
+	 */
+	private double standardDeviation(double[] list, double avarage){
+		double temp = 0;
+
+		for(double value: list){
+			temp+=Math.pow((value-avarage),2);
+		}
+		return Math.sqrt((temp/list.length));
+	}
+	
+	/**
+	 * Privat metod för att beräkna medelvärdet
+	 * @param list
+	 * @return avarage
+	 */
+	private double avarage(double[] list){
+		double avarage=0;
+		for(double value: list){
+			avarage+=value;
+		}
+		return avarage/list.length;
+	}
+
+	/**
+	 * Valuechecker är en metod för att kontrollera om det finns outlier värden i listorna som givits
+	 * printar sedan 
+	 */
+	public void valueChecker(){
+		int lists = 0;
+		double standardDeviation=0, avarage=0;
+		
+		/*
+		 * for-each loop som går igenom den yttre listan och tar ut standardavikelsen och medelvärdet
+		 */
+		for(double[] value: values){
+			int line = 0;
+			lists++;
+			avarage= avarage(value);
+			standardDeviation= standardDeviation(value,avarage);
+			
+			/*
+			 * for-each loop som undersöker hur många standardavikelser värdet varierar med
+			 * och om det avviker med mer än 2.5 gånger så räknas det som ett värdefel
+			 */
+			for(double var: value){
+				line++;
+				double temp= Math.abs(var-avarage)/standardDeviation;
+				if(temp>2.5)System.out.println("Outlier in list " +lists +", line " +line +" detected" );
+			}
+			
+		}
+	}
+
+}

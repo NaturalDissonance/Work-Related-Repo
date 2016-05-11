@@ -1,0 +1,30 @@
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+public class Handler {
+	private final String[] dates;
+	private final double[] values;
+	private final Pattern date= Pattern.compile("");
+	
+	public Handler(Tuple<String[], double[]> input){
+		dates = input.getLeft();
+		values = input.getRight();
+	}
+	
+	public void dateChecker(){
+		String[] previousDate = {"0","0","0"};
+		String[] currentDate;
+		for(String current:dates){
+			try{
+				String[] temp= current.split("T");
+				currentDate= temp[0].split("-");
+				if(current){
+				
+				}
+			}
+			catch{
+				
+			}
+		}
+	}
+}

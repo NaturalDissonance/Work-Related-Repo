@@ -1,0 +1,16 @@
+/**
+ * Main class to demonstrate how the datacheck works
+ * @author Axel Swaretz
+ *
+ */
+public class Main {
+	static String[] dates= { "2016-01-07T00:00:00Z","2016-01-08T00:00:00Z", "2016-01-11T00:00:00Z"}; 
+	static double[][] values= {{}};
+	static Tuple tuple = new Tuple<String[],double[][]>(dates,values);
+	static Handler handler= new Handler();
+	public static void main(String[] args) {
+		handler.set(tuple);
+		handler.valueChecker();
+	}
+
+}

@@ -1,0 +1,136 @@
+
+import java.util.regex.Pattern;
+
+public class Handler {
+	private String[] dates;
+	private double[][] values;
+	private final String validDate= "(201[0-9])-((((0[13578]|1[02])-(0[1-9]|[1-2][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))|02-(0[0-9]|1[0-9]|2[0-8]))";
+	
+	/**
+	 * konstruktor
+	 */
+	public Handler(){
+	}
+	
+	/**
+	 * metod för att ändra datan
+	 * @param input
+	 */
+	
+	public void set(Tuple input){
+		dates = input.getDates();
+		values = input.getValues();
+	}
+	
+	/**
+	 * dateChecker är en metod för att kontrollera att de datum som gavs i konstruktorn är korrekta
+	 * och skriver till konsollen vilka eventuella rader det är fel på
+	 * @return	boolean integrity
+	 */
+	public void dateChecker(){
+		boolean integrity = true;
+		int line = 0;
+		String[] previousDate = {"0","0","0"};
+		String[] currentDate;
+		for(String current:dates){
+			line++;
+			try{
+				String[] temp= current.split("T");
+				currentDate= temp[0].split("-");
+				
+				/*
+				 * Stor if stats för att kontrollera för att datumen är korrekta, 
+				 * (dvs att februari inte kan ha mer än 28 dagar och att ett år inte kan ha mer än 12 månader)
+				 * och att datumen är i stigande ordning 
+				 */
+				if(
+					Pattern.matches(validDate, temp[0]) &&
+					(Integer.parseInt(currentDate[0])>=Integer.parseInt(previousDate[0]) &&
+					Integer.parseInt(currentDate[1])>=Integer.parseInt(previousDate[1]) &&
+					Integer.parseInt(currentDate[2])>Integer.parseInt(previousDate[2])) &&
+					Pattern.matches("([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])Z", temp[1])
+				){
+					previousDate=currentDate;
+					continue;
+				}
+				
+				
+				else{
+					//Skriver till konsollen som en error line att datum på rad x är inkorrekt formaterat
+					System.err.println("Date on line ++ " +line + " is incorrectly formated.");
+					integrity= false;
+				}
+			}
+			catch(IndexOutOfBoundsException e){
+				System.err.println("Date on line " +line + " is incorrectly formated.");
+				integrity= false;
+			}
+			catch(NumberFormatException e){
+				System.err.println("Date on line " +line + " is incorrectly formated.");
+				integrity= false;
+			}
+		}
+		if(integrity){
+			System.out.println("All dates are correctly formated.");
+		}
+	}
+
+	/**
+	 * Privat metod för att beräkna standardavvikelsen
+	 * @param list
+	 * @return standardDeviation
+	 */
+	private double standardDeviation(double[] list, double avarage){
+		double temp = 0;
+
+		for(double value: list){
+			temp+=Math.pow((value-avarage),2);
+		}
+		return Math.sqrt((temp/list.length));
+	}
+	
+	/**
+	 * Privat metod för att beräkna medelvärdet
+	 * @param list
+	 * @return avarage
+	 */
+	private double avarage(double[] list){
+		double avarage=0;
+		for(double value: list){
+			avarage+=value;
+		}
+		return avarage/list.length;
+	}
+
+	/**
+	 * Valuechecker är en metod för att kontrollera om det finns outlier värden i listorna som givits
+	 * printar sedan 
+	 */
+	public void valueChecker(){
+		int lists = 0;
+		boolean integrity = true;
+		double standardDeviation=0, avarage=0;
+		
+		/*
+		 * for-each loop som går igenom den yttre listan och tar ut standardavikelsen och medelvärdet
+		 */
+		for(double[] value: values){
+			int line = 0;
+			lists++;
+			avarage= avarage(value);
+			standardDeviation= standardDeviation(value,avarage);
+			
+			/*
+			 * for-each loop som undersöker hur många standardavikelser värdet varierar med
+			 * och om det avviker med mer än 2.5 gånger så räknas det som ett värdefel
+			 */
+			for(double var: value){
+				line++;
+				double temp= Math.abs(var-avarage)/standardDeviation;
+				if(temp>2.5)System.out.println("Outlier in list " +lists +", line " +line +" detected" );
+			}
+			
+		}
+	}
+
+}

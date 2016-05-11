@@ -1,0 +1,138 @@
+import java.util.regex.Pattern;
+
+public class Handler {
+	private String[] dates;
+	private double[][] values;
+	private int length;
+	private final String validDate= "(201[0-9])-((((0[13578]|1[02])-(0[1-9]|[1-2][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))|02-(0[0-9]|1[0-9]|2[0-8]))";
+	
+	/**
+	 * konstruktor
+	 */
+	public Handler(){
+	}
+	
+	/**
+	 * metod för att ändra datan
+	 * @param input
+	 */
+	
+	public void set(Tuple<String[], double[][]> input){
+		dates = input.getLeft();
+		values = input.getRight();
+		length= dates.length;
+	}
+	
+	/**
+	 * dateChecker är en metod för att kontrollera att de datum som gavs i konstruktorn är korrekta
+	 * returnerar true om Datumen är korrekta och false om de är inkorrekta
+	 * och skriver till konsollen vilka eventuella rader det är fel på
+	 * @return	boolean integrity
+	 */
+	public boolean dateChecker(){
+		boolean integrity = true;
+		int line = 0;
+		String[] previousDate = {"0","0","0"};
+		String[] currentDate;
+		for(String current:dates){
+			line++;
+			try{
+				String[] temp= current.split("T");
+				currentDate= temp[0].split("-");
+				
+				/*
+				 * Stor if stats för att kontrollera för att datumen är korrekta, 
+				 * (dvs att februari inte kan ha mer än 28 dagar och att ett år inte kan ha mer än 12 månader)
+				 * och att datumen är i stigande ordning 
+				 */
+				if(
+					Pattern.matches(validDate, temp[0]) &&
+					(Integer.parseInt(currentDate[0])>=Integer.parseInt(previousDate[0]) &&
+					Integer.parseInt(currentDate[1])>=Integer.parseInt(previousDate[1]) &&
+					Integer.parseInt(currentDate[2])>Integer.parseInt(previousDate[2])) &&
+					Pattern.matches("([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])Z", temp[1])
+				){
+					previousDate=currentDate;
+					continue;
+				}
+				
+				
+				else{
+					//Skriver till konsollen som en error line att datum på rad x är inkorrekt formaterat
+					System.err.println("Date on line " +line + " is incorrectly formated.");
+					integrity= false;
+				}
+			}
+			catch(IndexOutOfBoundsException e){
+				System.err.println("Date on line " +line + " is incorrectly formated.");
+				integrity= false;
+			}
+			catch(NumberFormatException e){
+				System.err.println("Date on line " +line + " is incorrectly formated.");
+				integrity= false;
+			}
+		}
+		if(integrity){
+			System.out.println("All dates are correctly formated.");
+		}
+		return integrity;
+	}
+
+	/**
+	 * Privat metod för att beräkna standardavvikelsen
+	 * @param list
+	 * @return standardDeviation
+	 */
+	private double standardDeviation(double[] list){
+		double avarage=avarage(list), temp = 0;
+
+		for(double value: list){
+			temp+=Math.pow((value-avarage),2);
+		}
+		return Math.sqrt((temp/list.length));
+	}
+	
+	/**
+	 * Privat metod för att beräkna medelvärdet
+	 * @param list
+	 * @return avarage
+	 */
+	private double avarage(double[] list){
+		double avarage=0;
+		for(double value: list){
+			avarage+=value;
+		}
+		return avarage/list.length;
+	}
+
+	public void valueChecker(){
+		int lists = 0;
+		int line = 0;
+		boolean integrity = true;
+		double standardDeviation=0, avarage=0;
+		
+		/*
+		 * for-each loop som går igenom den yttre listan och undersöker om de inre listorna är av korrekt längd
+		 */
+		for(double[] value: values){
+			lists++;
+			if(true){
+				line++;
+				standardDeviation= standardDeviation(value);
+				avarage= avarage(value);
+				for(double var: value){
+					double temp= Math.abs(var-avarage)/standardDeviation;
+					if(temp>2)System.out.println(temp);
+				}
+			}
+			else if (value.length > length || value.length < length){
+				System.err.println("List number " + lists + " is of incorrect length.");
+				continue;
+			}
+		}
+		if(integrity){
+			System.out.println("All data is correctly formated.");
+		}
+	}
+
+}

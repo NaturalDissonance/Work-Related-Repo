@@ -1,0 +1,11 @@
+
+public class Main {
+	static String a= "hejsan";
+	public static void main(String[] args) {
+		String[] b= a.split(" ");
+		for(String c:b){
+			System.out.println(c);
+		}
+	}
+
+}

@@ -1,0 +1,15 @@
+/**
+ * Main class för att demonstrera hur datakontroller sker.
+ * @author Axel Swaretz
+ *
+ */
+public class Main {
+	static Tuple tuple = new Tuple();
+	static Handler handler= new Handler();
+	public static void main(String[] args) {
+		handler.set(tuple);
+		handler.dateChecker();
+		handler.valueChecker();
+	}
+
+}

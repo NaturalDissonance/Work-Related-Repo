@@ -1,0 +1,9 @@
+
+public class Main {
+	static String a= "hejsan";
+	public static void main(String[] args) {
+		a.split(" ");
+
+	}
+
+}

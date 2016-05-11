@@ -1,0 +1,22 @@
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+public class Handler {
+	private final String[] dates;
+	private final float[] values;
+	private final Pattern date= Pattern.compile("");
+	
+	public Handler(Tuple<String[], float[]> input){
+		dates = input.getLeft();
+		values = input.getRight();
+	}
+	
+	public void dateChecker(){
+		String previous;
+		for(String current:dates){
+			if(current){
+				
+			}
+		}
+	}
+}
